@@ -1,0 +1,75 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block admin_content %}
+<div class="card p-3 mb-3">
+  <h4 class="mb-3">Edit User: {{ user_obj.username }}</h4>
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group mb-2">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="invalid-feedback d-block">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-sm"
+        style="background-color: #FFC107; color: #000; border: 1px solid #000;"
+        onmouseover="this.style.backgroundColor='white'; this.style.color='#000';"
+        onmouseout="this.style.backgroundColor='#FFC107'; this.style.color='#000';">
+  Save
+</button>
+
+      <a href="{% url 'adminpanel:users_list' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<!-- User Scan History -->
+<div class="card p-3">
+  <h4 class="mb-2">Scan History</h4>
+  <table class="table table-dark table-striped mb-0">
+    <thead>
+      <tr>
+        <th>When</th>
+        <th>Food</th>
+        <th>Confidence</th>
+        <th>Allergen Alert</th>
+        <th>Preview</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in scans %}
+      <tr>
+        <td>{{ s.scanned_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ s.food_item.name|default:"Unknown" }}</td>
+        <td>{{ s.confidence|default:"—" }}{% if s.confidence %}%{% endif %}</td>
+        <td>
+          {% if s.allergen_detected %}
+            <span class="badge badge-danger">Yes</span>
+          {% else %}
+            <span class="badge badge-success">No</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if s.image %}
+            <img src="{{ s.image.url }}" alt="scan" style="height:48px;width:48px;object-fit:cover;border-radius:6px;">
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-muted">No scans found for this user.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

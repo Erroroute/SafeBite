@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}SafeBite{% endblock %}</title>
+
+  <!-- Option A: Use CDNs (fastest to try) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css" />
+
+  <!-- Option B: Host locally in /static (uncomment if you’ve copied files) -->
+  
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'slick/slick.css' %}">
+  <link rel="stylesheet" href="{% static 'slick/slick-theme.css' %}">
+  <link rel="stylesheet" href="{% static 'css/tooplate-style.css' %}">
+  
+
+  <!-- Project-global stylesheet (your overrides) -->
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+  <script>
+    document.documentElement.className="js";
+    (function(){
+      var supportsCssVars=function(){
+        var e,t=document.createElement("style");
+        t.innerHTML="root: { --tmp-var: bold; }";
+        document.head.appendChild(t);
+        e=!!(window.CSS&&window.CSS.supports&&window.CSS.supports("font-weight","var(--tmp-var)"));
+        t.parentNode.removeChild(t);
+        return e
+      };
+      if(!supportsCssVars()){
+        alert("Please view this in a modern browser such as latest Chrome or Edge.");
+      }
+    })();
+  </script>
+  <style>
+  /* Navbar link colors */
+  .nav-link {
+    color: #f0f0f0 !important;  /* light gray */
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .nav-link:hover {
+    color: #ffd166 !important;  /* yellow highlight on hover */
+    text-decoration: none;
+  }
+
+  .nav-link.btn.btn-primary {
+    color: #ffffff !important;  /* keep button links white */
+  }
+  
+  .nav .nav-link i.fa-sign-out-alt { margin-left: .8rem; }
+</style>
+
+  
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Background panel like Pop -->
+  <div id="tm-bg"></div>
+
+  <div id="tm-wrap">
+    <div class="tm-main-content">
+      <header class="container tm-site-header-container py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="tm-site-header">
+            <h1 class="mb-2" style="font-weight:700;"><i class="fas fa-shield-alt"></i> SafeBite</h1>
+            <img src="{% static 'img/underline.png' %}" class="img-fluid mb-2" alt="underline" />
+            <p class="mb-0">Professional food allergy detection for safer dining</p>
+          </div>
+          <nav>
+            <ul class="nav">
+              <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home "></i> Home</a></li>
+              {% if request.user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user-cog"></i> Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'scan' %}"><i class="fas fa-camera"></i> Scan</a></li>
+                <li class="nav-item"><a class="nav-link " href="{% url 'logout' %}" ><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+              {% else %}
+                <li class="nav-item"><a class="nav-link " href="{% url 'login' %}"><i class="fas fa-sign-in-alt mr-1"></i>Login</a></li>
+                <li class="nav-item"><a class="nav-link " href="{% url 'register' %}"><i class="fas fa-user-plus mr-1"></i>Register</a></li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      {% block hero %}
+      <!-- Optional hero or banner can be injected here by child templates -->
+      {% endblock %}
+
+      <!-- Main page content surface -->
+      <main class="container">
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer class="text-center py-4 mb-15">
+        <p class="small mb-0">© <span class="tm-current-year">{{ now|date:"Y" }}</span> SafeBite.
+          Design inspired by <a rel="nofollow" href="https://www.google.com" class="tm-text-highlight">Amina</a>
+        </p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Option A: CDN JS (order matters: jQuery → Popper → Bootstrap; plus Slick/Anime and your main.js) -->
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script> -->
+
+  <!-- Option B: Local JS in /static (uncomment if copied) -->
+  
+  <script src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
+  <script src="{% static 'slick/slick.min.js' %}"></script>
+  <script src="{% static 'js/anime.min.js' %}"></script>
+  
+
+  <!-- Project-global script -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+  <script>
+    // Footer year update similar to Pop template
+    document.addEventListener('DOMContentLoaded', function() {
+      var el = document.querySelector('.tm-current-year');
+      if (el) { el.textContent = new Date().getFullYear(); }
+    });
+  </script>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

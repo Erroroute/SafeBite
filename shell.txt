@@ -1,0 +1,100 @@
+from allergy_app.models import Allergen, FoodItem
+
+# --- Step 1: Populate common allergens ---
+allergens_list = [
+    'Peanuts', 'Tree Nuts', 'Milk', 'Eggs', 'Wheat',
+    'Soy', 'Fish', 'Shellfish', 'Sesame'
+]
+for name in allergens_list:
+    Allergen.objects.get_or_create(name=name)
+
+# --- Step 2: Full Food-101 classes ---
+food_classes = [
+    "Apple pie", "Baby back ribs", "Baklava", "Beef carpaccio", "Beef tartare", "Beet salad",
+    "Beignets", "Bibimbap", "Bread pudding", "Breakfast burrito", "Bruschetta", "Caesar salad",
+    "Cannoli", "Caprese salad", "Carrot cake", "Ceviche", "Cheesecake", "Cheese plate",
+    "Chicken curry", "Chicken quesadilla", "Chicken wings", "Chocolate cake", "Chocolate mousse",
+    "Churros", "Clam chowder", "Club sandwich", "Crab cakes", "Creme brulee", "Croque madame",
+    "Cup cakes", "Deviled eggs", "Donuts", "Dumplings", "Edamame", "Eggs benedict", "Escargots",
+    "Falafel", "Filet mignon", "Fish and chips", "Foie gras", "French fries", "French onion soup",
+    "French toast", "Fried calamari", "Fried rice", "Frozen yogurt", "Garlic bread", "Gnocchi",
+    "Greek salad", "Grilled cheese sandwich", "Grilled salmon", "Guacamole", "Gyoza", "Hamburger",
+    "Hot and sour soup", "Hot dog", "Huevos rancheros", "Hummus", "Ice cream", "Lasagna",
+    "Lobster bisque", "Lobster roll sandwich", "Macaroni and cheese", "Macarons", "Miso soup",
+    "Mussels", "Nachos", "Omelette", "Onion rings", "Oysters", "Pad thai", "Paella", "Pancakes",
+    "Panna cotta", "Peking duck", "Pho", "Pizza", "Pork chop", "Poutine", "Prime rib",
+    "Pulled pork sandwich", "Ramen", "Ravioli", "Red velvet cake", "Risotto", "Samosa", "Sashimi",
+    "Scallops", "Seaweed salad", "Shrimp and grits", "Spaghetti bolognese", "Spaghetti carbonara",
+    "Spring rolls", "Steak", "Strawberry shortcake", "Sushi", "Tacos", "Takoyaki", "Tiramisu",
+    "Tuna tartare", "Waffles"
+]
+
+# --- Step 3: Define approximate allergen mappings ---
+food_allergens = {
+    "Apple pie": ["Wheat", "Milk", "Eggs"],
+    "Baklava": ["Tree Nuts", "Wheat", "Milk"],
+    "Beef tartare": ["Eggs"],
+    "Beignets": ["Wheat", "Milk", "Eggs"],
+    "Bibimbap": ["Soy", "Sesame"],
+    "Bread pudding": ["Wheat", "Milk", "Eggs"],
+    "Bruschetta": ["Wheat"],
+    "Caesar salad": ["Fish", "Eggs", "Milk"],
+    "Cannoli": ["Wheat", "Milk", "Eggs"],
+    "Carrot cake": ["Wheat", "Milk", "Eggs", "Tree Nuts"],
+    "Cheesecake": ["Wheat", "Milk", "Eggs"],
+    "Chicken quesadilla": ["Wheat", "Milk"],
+    "Chocolate cake": ["Wheat", "Milk", "Eggs"],
+    "Chocolate mousse": ["Milk", "Eggs"],
+    "Clam chowder": ["Milk", "Shellfish"],
+    "Crab cakes": ["Shellfish", "Eggs", "Wheat"],
+    "Creme brulee": ["Milk", "Eggs"],
+    "Cup cakes": ["Wheat", "Milk", "Eggs"],
+    "Donuts": ["Wheat", "Milk", "Eggs"],
+    "Edamame": ["Soy"],
+    "Eggs benedict": ["Eggs", "Wheat", "Milk"],
+    "Falafel": ["Sesame", "Wheat"],
+    "Fish and chips": ["Fish", "Wheat"],
+    "French toast": ["Wheat", "Milk", "Eggs"],
+    "Frozen yogurt": ["Milk"],
+    "Gnocchi": ["Wheat", "Eggs"],
+    "Grilled cheese sandwich": ["Wheat", "Milk"],
+    "Hamburger": ["Wheat"],
+    "Hot dog": ["Wheat"],
+    "Ice cream": ["Milk", "Eggs"],
+    "Lasagna": ["Wheat", "Milk"],
+    "Lobster bisque": ["Shellfish", "Milk"],
+    "Macaroni and cheese": ["Wheat", "Milk"],
+    "Macarons": ["Tree Nuts", "Eggs"],
+    "Miso soup": ["Soy"],
+    "Omelette": ["Eggs"],
+    "Pad thai": ["Peanuts", "Eggs"],
+    "Pancakes": ["Wheat", "Milk", "Eggs"],
+    "Peking duck": ["Soy", "Wheat"],
+    "Pizza": ["Wheat", "Milk"],
+    "Ramen": ["Wheat", "Soy", "Eggs"],
+    "Ravioli": ["Wheat", "Milk", "Eggs"],
+    "Red velvet cake": ["Wheat", "Milk", "Eggs"],
+    "Samosa": ["Wheat"],
+    "Sashimi": ["Fish"],
+    "Shrimp and grits": ["Shellfish", "Milk"],
+    "Spaghetti bolognese": ["Wheat", "Milk"],
+    "Spaghetti carbonara": ["Wheat", "Milk", "Eggs"],
+    "Spring rolls": ["Wheat"],
+    "Sushi": ["Fish", "Soy", "Sesame"],
+    "Tacos": ["Wheat"],
+    "Takoyaki": ["Wheat", "Eggs"],
+    "Tiramisu": ["Wheat", "Milk", "Eggs"],
+    "Waffles": ["Wheat", "Milk", "Eggs"]
+}
+
+# --- Step 4: Create FoodItems and link allergens ---
+for food_name in food_classes:
+    food, created = FoodItem.objects.get_or_create(
+        name=food_name,
+        defaults={'ingredients': 'See allergens'}
+    )
+    for allergen_name in food_allergens.get(food_name, []):
+        allergen = Allergen.objects.get(name=allergen_name)
+        food.allergens.add(allergen)
+
+print(f"✅ Populated {len(food_classes)} food items with allergens!")

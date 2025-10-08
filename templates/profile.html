@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Profile · SAFE BITE{% endblock %}
+{% block content %}
+<div class="sb-profile-container">
+  <h2 class="sb-title">Your Allergy Profile</h2>
+  <p class="sb-subtitle">Select allergens to receive personalized warnings during scans.</p>
+
+  <form method="POST" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="sb-allergen-panel">
+      {% for checkbox in form.allergens %}
+        <div class="sb-pill-wrapper">
+          {{ checkbox.tag }}
+          <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" class="sb-btn-primary">
+      <i class="fas fa-save mr-1"></i> Save
+    </button>
+  </form>
+</div>
+
+<style>
+/* Container styling */
+.sb-profile-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* Title and subtitle */
+.sb-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #fff;
+}
+.sb-subtitle {
+  font-size: 0.95rem;
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+/* Allergen panel */
+.sb-allergen-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Hide default checkboxes */
+.sb-allergen-panel input[type="checkbox"] {
+  display: none;
+}
+
+/* Pill-style labels */
+.sb-pill-wrapper label {
+  display: block;
+  cursor: pointer;
+  padding: 0.5rem 0.9rem;
+  border-radius: 25px;
+  background: rgba(149, 149, 149, 0.1);
+  color: #ffffff;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Checked pill */
+.sb-allergen-panel input[type="checkbox"]:checked + label {
+  background: #a8a8a8;
+  color: #fff;
+  border-color: #898989;
+  box-shadow: 0 4px 10px rgba(52,152,219,0.3);
+  transform: translateY(-1px);
+}
+
+/* Primary button */
+.sb-btn-primary {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  color: #c7c7c7;
+  background: rgba(52,152,219,0.1);
+  border: 2px solid #cecece;
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 12px rgba(218, 218, 218, 0.2);
+  transition: all 0.2s ease;
+}
+
+.sb-btn-primary:hover,
+.sb-btn-primary:focus {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(52,152,219,0.3);
+  outline: none;
+}
+</style>
+{% endblock %}

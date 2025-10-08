@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home · SAFE BITE{% endblock %}
+
+{% block content %}
+<style>
+  .sb-panel {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+  }
+  .sb-history {
+    max-height: 360px;       /* about 3 items tall, then scroll */
+    overflow-y: auto;        /* scroll only when needed */
+    overscroll-behavior: contain;
+  }
+  .sb-history-item {
+    display: flex; align-items: center;
+    gap: 12px; padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .sb-history-item:last-child { border-bottom: none; }
+  .sb-thumb {
+    width: 56px; height: 56px; border-radius: 8px;
+    object-fit: cover; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  .sb-meta { color: #e6e6e6; line-height: 1.25; }
+  .sb-meta small { color: #bfc7ce; }
+  .sb-badge {
+    margin-left: auto; padding: .25rem .5rem;
+    border-radius: 999px; font-weight: 600; font-size: .8rem;
+  }
+  .sb-badge.ok { background: #d4edda; color: #155724; border: 2px solid #28a745; }
+  .sb-badge.warn { background: #f8d7da; color: #721c24; border: 2px solid #dc3545; }
+  .sb-badge.unknown {
+  background: #e2e3e5;
+  color: #383d41;
+  border: 2px solid #6c757d;
+}
+  
+</style>
+
+<h2 class="mb-3">Welcome to SAFE BITE</h2>
+
+{% if request.user.is_authenticated %}
+  <p class="mb-3">Manage allergens in the profile and scan foods to check for risks.</p>
+ 
+
+  <div class="sb-panel">
+    <div class="d-flex justify-content-between align-items-center px-3 py-2">
+      <div class="h5 mb-0" style="color:#fff;">Scan history</div>
+      <small class="text-muted">Newest first</small>
+    </div>
+    <div class="sb-history">
+      {% if history %}
+  {% for item in history %}
+    <div class="sb-history-item">
+      <img src="{{ item.image.url }}" alt="scan" class="sb-thumb">
+      
+      <div class="sb-meta">
+        <div>
+          {% if item.food_item %}
+            {{ item.food_item.name }}
+          {% else %}
+            <span class="text-muted fst-italic">Unknown item</span>
+          {% endif %}
+        </div>
+        <small>{{ item.scanned_at|date:"M d, Y · H:i" }}</small>
+      </div>
+
+      {% if not item.food_item %}
+        <span class="sb-badge unknown">❓ Unknown</span>
+      {% elif item.allergen_detected %}
+        <span class="sb-badge warn">⚠️ Alert</span>
+      {% else %}
+        <span class="sb-badge ok">✅ Safe</span>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="px-3 py-3 text-muted">No scans yet. Try uploading a photo on the Scan page.</div>
+{% endif %}
+</div>
+  </div>
+{% else %}
+  {% if not request.user.is_authenticated %}
+  <section class="sb-panel p-3">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="sb-tile">
+          <i class="fas fa-user-shield"></i>
+          <div class="sb-tile-title">Create profile</div>
+          <div class="sb-tile-text">Add allergens for personalized warnings.</div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="sb-tile">
+          <i class="fas fa-camera"></i>
+          <div class="sb-tile-title">Scan food</div>
+          <div class="sb-tile-text">Detect allergens in seconds.</div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="sb-tile">
+          <i class="fas fa-exchange-alt"></i>
+          <div class="sb-tile-title">Get alternatives</div>
+          <div class="sb-tile-text">Safer suggestions when allergens appear.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+{% endif %}
+{% endblock %}

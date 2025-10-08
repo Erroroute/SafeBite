@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Scan · SAFE BITE{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 720px;">
+  <h2 class="mb-3">Scan Food</h2>
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="mb-2">Upload a food photo</label>
+
+      <!-- Pretty dropzone-like area -->
+      <label class="sb-dropzone w-100" for="id_image">
+        <div class="text-center px-3 py-5">
+          <div class="sb-drop-icon mb-2">📷</div>
+          <div class="h6 mb-1">Click to choose an image</div>
+          <div class="text-muted small">PNG, JPG up to 10MB</div>
+        </div>
+      </label>
+
+      <!-- Hidden file input -->
+      {{ form.image.as_widget|safe }}
+      {% if form.image.errors %}
+        <div class="invalid-feedback d-block">{{ form.image.errors|striptags }}</div>
+      {% endif %}
+
+      <!-- Display selected filename -->
+      <p id="file-name" class="text-light small mt-1"></p>
+    </div>
+
+    <button type="submit" class="sb-btn-primary">
+      <i class="fas fa-search mr-1"></i> Scan
+    </button>
+  </form>
+</div>
+
+<style>
+  /* Completely hide default file input */
+input[type="file"]#id_image {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Dropzone styling */
+.sb-dropzone {
+  display: block;
+  border: 2px dashed rgba(192, 192, 192, 0.7);
+  border-radius: 14px;
+  background: rgba(176, 176, 176, 0.1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  margin-bottom: 1rem;
+}
+
+.sb-dropzone:hover {
+  background: rgba(230, 230, 230, 0.2);
+  transform: translateY(-2px);
+  border-color: rgba(197, 197, 197, 0.9);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.sb-drop-icon {
+  font-size: 2.2rem;
+  color: #3498db;
+}
+
+.sb-dropzone .h6 {
+  color: #fff;
+}
+
+/* Primary button styling */
+.sb-btn-primary {
+ display: inline-block;
+  color: #d8d8d8; /* Text matches primary theme */
+  background: rgba(241, 241, 241, 0.1); /* Transparent-ish background */
+  border: 2px solid #b7b8b9; /* Optional border to make button visible */
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2); /* subtle shadow */
+  transition: all 0.2s ease;
+}
+
+.sb-btn-primary:hover,
+.sb-btn-primary:focus {
+  background: rgba(74, 74, 74, 0.2); /* slightly darker on hover */
+  color: #fff; /* optional: change text color on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+  outline: none;
+}
+
+</style>
+
+<script>
+  // Show chosen filename under the dropzone
+  document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('id_image');
+    const fileName = document.getElementById('file-name');
+    if (!input) return;
+
+    input.addEventListener('change', function() {
+      if (fileName && input.files && input.files.length) {
+        fileName.textContent = `Selected file: ${input.files[0].name}`;
+      }
+    });
+  });
+</script>
+{% endblock %}

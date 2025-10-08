@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Login · SAFE BITE{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 520px;">
+  <h2 class="mb-4">Login</h2>
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+  {% endif %}
+
+  <form method="POST" novalidate>
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="{{ form.username.id_for_label }}">Username</label>
+      {{ form.username.as_widget|safe }}
+      {% if form.username.errors %}
+        <div class="invalid-feedback d-block">
+          {{ form.username.errors|striptags }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.password.id_for_label }}">Password</label>
+      {{ form.password.as_widget|safe }}
+      {% if form.password.errors %}
+        <div class="invalid-feedback d-block">
+          {{ form.password.errors|striptags }}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+    <button type="submit" class="sb-btn-primary btn-block"><i class="fas fa-sign-in-alt mr-1"></i>Login</button>
+  </form>
+</div>
+
+<style>
+  /* Make inputs aligned and consistent with Bootstrap look */
+  input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
+  }
+  /* Ensure Django default widgets get Bootstrap styling */
+  .form-group input {
+    padding: .5rem .75rem;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    font-size: 1rem;
+  }
+  .form-group input:focus {
+    outline: 0;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 .2rem rgba(0,123,255,.25);
+  }
+</style>
+<style>
+  :root {
+  --sb-primary: #929292;
+  --sb-primary-dark: #c6c6c6;
+}
+
+.sb-btn-primary {
+  display: inline-block;
+  width: 100%;
+  color: white;
+  background: transparent; /* make transparent */
+  border: 2px solid var(--sb-primary); /* add visible outline */
+  border-radius: 12px;
+  padding: .75rem 1rem;
+  font-weight: 600;
+  letter-spacing: .2px;
+  box-shadow: none; /* remove default shadow */
+  transition: all .2s ease;
+}
+
+.sb-btn-primary:hover,
+.sb-btn-primary:focus {
+  background: rgba(146, 146, 146, 0.1); /* subtle tint on hover */
+  color: var(--sb-primary-dark);
+  border-color: var(--sb-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(87, 87, 87, 0.15);
+  outline: none;
+}
+
+.sb-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+</style>
+
+{% endblock %}

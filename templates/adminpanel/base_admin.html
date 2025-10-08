@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin · SafeBite{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/png" href="{% static 'img/safebite-logo.png' %}">
+
+  <style>
+    body {
+      background: #0b0c10;
+      color: #eaeaea;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sb-admin-sidebar {
+      width: 240px;
+      background: rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1.5rem 1rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .sb-admin-logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .sb-admin-logo img { height: 48px; margin-right: 10px; }
+    .sb-admin-logo h4 { color: #ffd166; font-weight: 700; margin: 0; font-size: 1.4rem; }
+
+    .sb-admin-nav a {
+      display: flex;
+      align-items: center;
+      padding: .6rem 1rem;
+      color: #d0d0d0;
+      text-decoration: none;
+      border-radius: .4rem;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .sb-admin-nav a:hover, .sb-admin-nav a.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .sb-admin-nav i { margin-right: 10px; font-size: 1.1rem; }
+
+    /* Content area */
+    .sb-admin-content {
+      margin-left: 260px;
+      padding: 2rem;
+      flex: 1;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: .75rem;
+      padding: 1.5rem;
+      color: #fff;
+    }
+
+    .btn-light.border {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+    .btn-light.border:hover { background: rgba(255,255,255,0.18); }
+
+    a, a:hover { text-decoration: none; }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sb-admin-sidebar">
+    <div class="sb-admin-logo">
+      
+      <h4><i class="fas fa-shield-alt"></i> SafeBite</h4>
+    </div>
+
+    <nav class="sb-admin-nav">
+      <a href="{% url 'adminpanel:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <i class="fas fa-chart-line"></i> Dashboard
+      </a>
+      <a href="{% url 'adminpanel:users_list' %}" class="{% if request.resolver_match.url_name == 'users_list' %}active{% endif %}">
+        <i class="fas fa-users"></i> Users
+      </a>
+      <a href="{% url 'adminpanel:food_list' %}" class="{% if request.resolver_match.url_name == 'food_list' %}active{% endif %}">
+        <i class="fas fa-utensils"></i> Foods
+      </a>
+      <a href="{% url 'adminpanel:allergen_list' %}" class="{% if request.resolver_match.url_name == 'allergen_list' %}active{% endif %}">
+        <i class="fas fa-virus"></i> Allergens
+      </a>
+      <a href="{% url 'adminpanel:scan_list' %}" class="{% if request.resolver_match.url_name == 'scan_list' %}active{% endif %}">
+        <i class="fas fa-camera"></i> Scans
+      </a>
+      <a href="{% url 'logout' %}" ><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+              
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <main class="sb-admin-content">
+
+    <!-- Messages -->
+    
+
+    {% block admin_content %}
+    {% endblock %}
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Scan Result · SAFE BITE{% endblock %}
+{% block content %}
+<style>
+  .sb-offset-top { margin-top: 5rem; }
+  @media (max-width: 768px) { .sb-offset-top { margin-top: 4rem; } }
+
+  h2 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700; font-size: 2rem; color: #f5f5f5;
+    letter-spacing: 0.5px; margin-bottom: 1rem;
+  }
+  p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.05rem; color: #e0e0e0; line-height: 1.6;
+  }
+  strong { color: #ffffff; font-weight: 600; }
+  .alert { font-size: 1rem; font-weight: 500; letter-spacing: 0.3px; }
+  .alert-danger { color: #ff6b6b; }
+  .alert-success { color: #4caf50; }
+  .alert-warning { color: #ffd166; }
+
+  /* Alternatives chips */
+  .sb-alt-wrap { margin-top: .5rem; }
+  .sb-chip {
+    display: inline-block; margin: .25rem .35rem .25rem 0;
+    padding: .35rem .6rem; border-radius: 999px;
+    background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.25);
+    color: #fff; font-weight: 600; letter-spacing: .2px;
+  }
+</style>
+
+<div class="container sb-offset-top" style="max-width: 720px;">
+  <h2>Scan Result</h2>
+
+  {% if low_confidence %}
+    <!-- Low-confidence warning -->
+    <div class="alert alert-warning mb-3" style="background-color: rgba(255, 209, 102, 0.2); color: #ffd166; border: 1px solid #ffd166; font-weight: 600;">
+      ⚠️ The model is not confident about this prediction. 
+      Please try scanning again with a clearer image.
+    </div>
+
+  {% else %}
+    <!-- High-confidence section -->
+    <p class="mb-2" style="color: #f0f0f0; font-size: 1.1rem; letter-spacing: 0.4px;">
+      <strong style="color: #ffffff; font-weight: 600;">Food Detected:</strong>
+      <span style="color: #ffd166; font-weight: 500;">{{ food_name }}</span>
+      <span style="color: #b0b0b0;">(Confidence: <span style="color: #80ed99;">{{ confidence }}%</span>)</span>
+    </p>
+
+    {% if allergen_detected %}
+      <div class="alert alert-danger mb-2" style="background-color: rgba(255, 108, 108, 0.2); color: #ff6b6b; border: 1px solid #ff6b6b; font-weight: 600;">
+        ⚠️ Allergen Detected! Avoid this food.
+      </div>
+
+      <p class="mb-2" style="color: #eaeaea; font-size: 1.05rem; letter-spacing: 0.3px;">
+        <strong style="color: #ffffff; font-weight: 700;">Detected Allergens:</strong>
+        {% for a in allergens %}
+          <span style="color: #ff8080; font-weight: 600; text-shadow: 0 0 6px rgba(255, 80, 80, 0.8);">
+            {{ a.name }}{% if not forloop.last %}, {% endif %}
+          </span>
+        {% endfor %}
+      </p>
+
+      {% if alternatives %}
+        <div class="sb-alt-wrap">
+          <div class="text-muted mb-1" style="font-size: 0.85rem; color: #cfd8dc !important;">Try instead:</div>
+          {% for item in alternatives %}
+            <span class="sb-chip">{{ item }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="alert alert-success mb-1" style="background-color: rgba(76, 175, 80, 0.15); border: 1px solid #4caf50;">
+        ✅ Safe to eat!
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <!-- Always show scanned image -->
+  <img src="{{ scan.image.url }}" class="img-fluid" style="max-height: 180px;">
+</div>
+{% endblock %}

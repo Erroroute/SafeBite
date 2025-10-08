@@ -1,0 +1,32 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block admin_content %}
+<div class="card p-4 shadow-sm">
+  <h4 class="mb-4">{{ mode }} Allergen</h4>
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      {{ form.name.label_tag }}
+      {{ form.name }}
+      {% if form.name.errors %}
+        <div class="invalid-feedback d-block">{{ form.name.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <div class="d-flex gap-2">
+       <button type="submit" class="btn btn-sm"
+        style="background-color: #FFC107; color: #000; border: 1px solid #000;"
+        onmouseover="this.style.backgroundColor='white'; this.style.color='#000';"
+        onmouseout="this.style.backgroundColor='#FFC107'; this.style.color='#000';">
+  Save
+</button>
+      <a href="{% url 'adminpanel:allergen_list' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

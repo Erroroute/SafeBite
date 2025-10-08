@@ -1,0 +1,70 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block admin_content %}
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+  <div class="col-md-2 mb-3">
+    <div class="card text-center text-white bg-primary shadow-sm">
+      <div class="card-body">
+        <i class="fas fa-users fa-2x mb-2"></i>
+        <h6 class="card-subtitle mb-1">Users</h6>
+        <h4 class="card-title">{{ stats.users }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2 mb-3">
+    <div class="card text-center text-white bg-success shadow-sm">
+      <div class="card-body">
+        <i class="fas fa-utensils fa-2x mb-2"></i>
+        <h6 class="card-subtitle mb-1">Foods</h6>
+        <h4 class="card-title">{{ stats.foods }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2 mb-3">
+    <div class="card text-center text-white bg-warning shadow-sm">
+      <div class="card-body">
+        <i class="fas fa-virus fa-2x mb-2"></i>
+        <h6 class="card-subtitle mb-1">Allergens</h6>
+        <h4 class="card-title">{{ stats.allergens }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card text-center text-white bg-info shadow-sm">
+      <div class="card-body">
+        <i class="fas fa-camera fa-2x mb-2"></i>
+        <h6 class="card-subtitle mb-1">Scans</h6>
+        <h4 class="card-title">{{ stats.scans }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card text-center text-white bg-danger shadow-sm">
+      <div class="card-body">
+        <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+        <h6 class="card-subtitle mb-1">Alerts</h6>
+        <h4 class="card-title">{{ stats.alerts }}</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Top Scanned Foods -->
+<div class="card mb-4 shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Top Scanned Foods</h5>
+    <ul class="list-group list-group-flush">
+      {% for row in top_foods %}
+        <li class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white">
+          {{ row.food_item__name|default:"Unknown" }}
+          <span class="badge bg-primary rounded-pill">{{ row.n }}</span>
+        </li>
+      {% empty %}
+        <li class="list-group-item bg-dark text-muted">No data yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block admin_content %}
+<div class="card p-3">
+  <h4 class="mb-3">Confirm delete</h4>
+  <p>Are you sure you want to delete <strong>{{ obj }}</strong>? This action cannot be undone.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger mr-2">Delete</button>
+    <a href="{{ request.META.HTTP_REFERER|default:'/' }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block admin_content %}
+<h4 class="mb-2">Recent scans</h4>
+<div class="card p-0">
+  <table class="table table-dark table-striped mb-0">
+    <thead>
+      <tr>
+        <th>When</th>
+        <th>User</th>
+        <th>Food</th>
+        <th>Confidence</th>
+        <th>Allergen alert</th>
+        <th>Preview</th>
+        <th width="100">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in scans %}
+      <tr>
+        <td>{{ s.scanned_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ s.user.username }}</td>
+        <td>{{ s.food_item.name|default:'Unknown' }}</td>
+        <td>
+          {% if s.confidence %}
+            {{ s.confidence }}%
+          {% else %}
+            — 
+          {% endif %}
+        </td>
+        <td>
+          {% if s.allergen_detected %}
+            <span class="badge bg-danger">Yes</span>
+          {% else %}
+            <span class="badge bg-success">No</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if s.image %}
+            <img src="{{ s.image.url }}" alt="scan" style="height:48px;width:48px;object-fit:cover;border-radius:6px;">
+          {% else %} — {% endif %}
+        </td>
+        <td>
+          <form method="post" action="{% url 'adminpanel:scan_delete' s.pk %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this scan?');">
+              Delete
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="text-muted">No scans yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

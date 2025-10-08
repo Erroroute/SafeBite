@@ -1,0 +1,130 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% load widget_tweaks %}
+{% block title %}{{ mode }} Food · Admin{% endblock %}
+{% block crumb %}Foods / {{ mode }}{% endblock %}
+{% block admin_content %}
+
+<style>
+  .sb-form-card {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: .9rem;
+    padding: 1.25rem;
+    color: #fff;
+  }
+  .sb-help { color: #cfd6dc; font-size: .9rem; }
+  .sb-fieldset { border: 1px dashed rgba(255,255,255,.2); border-radius: .6rem; padding: .9rem; }
+  .sb-checklist .form-check { margin-bottom: .35rem; }
+  .sb-aside {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: .8rem;
+    padding: 1rem;
+    height: 100%;
+  }
+  .sb-preview {
+    width: 100%; aspect-ratio: 4/3; object-fit: cover;
+    border-radius: .6rem; border: 1px solid rgba(255,255,255,.2);
+    background: rgba(0,0,0,.25);
+  }
+</style>
+
+<div class="container-fluid p-0">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">{{ mode }} Food</h4>
+    
+  </div>
+
+ 
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <div class="row g-3">
+      <!-- Main column -->
+      <div class="col-lg-8">
+        <div class="sb-form-card">
+          <!-- Name -->
+          <div class="mb-3">
+            <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+            {{ form.name|add_class:"form-control" }}
+            <div class="sb-help">Use a clear, user-facing dish name.</div>
+            {% if form.name.errors %}
+              <div class="invalid-feedback d-block">{{ form.name.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Ingredients if present on the form -->
+         
+          <!-- Allergens -->
+          <div class="mb-2">
+            <label class="form-label mb-2">Allergens</label>
+            <div class="sb-fieldset sb-checklist">
+              {# If using CheckboxSelectMultiple, Django outputs li/ul or divs. We can style inputs/items: #}
+              {{ form.allergens }}
+            </div>
+            <div class="sb-help">Select only allergens that are inherent to this food item.</div>
+            {% if form.allergens.errors %}
+              <div class="invalid-feedback d-block">{{ form.allergens.errors|striptags }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Side column -->
+      <div class="col-lg-4">
+        <div class="sb-aside">
+          <h6 class="mb-2">Publishing</h6>
+          <p class="sb-help mb-3">Review details before saving changes.</p>
+
+          {% if form.image %}
+            <div class="mb-3">
+              <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+              {{ form.image|add_class:"form-control" }}
+              {% if form.image.errors %}
+                <div class="invalid-feedback d-block">{{ form.image.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <img id="preview" class="sb-preview" alt="Preview">
+              <div class="sb-help mt-2">Preview updates when selecting a new image.</div>
+            </div>
+          {% endif %}
+
+          <div class="d-flex gap-2">
+             <button type="submit" class="btn btn-sm"
+        style="background-color: #FFC107; color: #000; border: 1px solid #000;"
+        onmouseover="this.style.backgroundColor='white'; this.style.color='#000';"
+        onmouseout="this.style.backgroundColor='#FFC107'; this.style.color='#000';">
+  Save
+</button>
+            <a href="{% url 'adminpanel:food_list' %}" class="btn btn-secondary">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% if form.image %}
+<script>
+  // Live image preview
+  document.addEventListener('DOMContentLoaded', function(){
+    const input = document.getElementById('{{ form.image.id_for_label }}');
+    const preview = document.getElementById('preview');
+    if (input && preview) {
+      input.addEventListener('change', function(){
+        const file = this.files && this.files[0];
+        if (file) {
+          const url = URL.createObjectURL(file);
+          preview.src = url;
+        } else {
+          preview.removeAttribute('src');
+        }
+      });
+    }
+  });
+</script>
+{% endif %}
+
+{% endblock %}
